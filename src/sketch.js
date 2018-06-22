@@ -157,13 +157,46 @@ function initKoma(){
         }
         return false;
     };
+    
+    hisha = function(r,c){
+        if(r == this.r && c == this.c) return false;
+        if(r == this.r){
+            if(c > this.c){
+                for(var i = this.c + 1; i < c; i++){
+                    if(findKoma(r, i)) return false;
+                }
+            }else{
+                for(var i = this.c - 1; i > c; i--){
+                    if(findKoma(r, i)) return false;
+                }
+            }
+            if(!isExistMikata(r,c,this.isSente)) return true;
+        }
+        if(c == this.c){
+            if(r > this.r){
+                for(var i = this.r + 1; i < r; i++){
+                    if(findKoma(i, c)) return false;
+                }
+            }else{
+                for(var i = this.r - 1; i > r; i--){
+                    if(findKoma(i, c)) return false;
+                }
+            }
+            if(!isExistMikata(r,c,this.isSente)) return true;
+        }
+        return false;
+    };
+    
+    kaku = function(r, c){
+        if(r == this.r && c == this.c) return false;
+    };
 
 
     for(n of [6,2]){
         for(var i = 0; i < MASU_COUNT; i++){
             koma_list.push(new Koma("歩", n,i,isSente, fu));
         }
-        koma_list.push(new Koma("飛", n+dir,isSente?1:7,isSente));
+        koma_list.push(new Koma("飛", n+dir,isSente?1:7,isSente, hisha));
         koma_list.push(new Koma("角", n+dir,isSente?7:1,isSente));
 
         const koma_names = ["香", "桂", "銀", "金"];

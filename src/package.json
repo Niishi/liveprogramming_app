@@ -1,0 +1,13 @@
+{
+  "name": "liveprogramming",
+  "version": "0.0.1",
+  "main": "main.js",
+  "author": "Yuya Yamanashi",
+  "devDependencies": {
+    "electron": "2.0.0"
+  },
+  "dependencies": {
+    "electron-prompt": "^0.5.0",
+    "p5js": "0.6.1"
+  }
+}

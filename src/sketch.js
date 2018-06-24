@@ -12,6 +12,8 @@ const MASU_SIZE = 60;
 const MASU_COUNT = 9;
 const BOARD_WIDTH = MASU_SIZE* MASU_COUNT;
 
+var turn = true;
+
 function isExistMikata(r,c,sente){
     var koma = findKoma(r,c);
     if(koma && koma.isSente == sente){
@@ -189,6 +191,18 @@ function initKoma(){
     
     kaku = function(r, c){
         if(r == this.r && c == this.c) return false;
+        if(direction(r,this.r) != direction(c,this.c)) return false;
+        let dirR = (r - this.r > 0) ? 1:-1;
+        let dirC = (c - this.c > 0) ? 1:-1;
+        let ir = this.r;
+        let ic = this.c;
+        for(var i = 0; i  < direction(r,this.r)-1; i++){
+            ir += dirR;
+            ic += dirC;
+            if(findKoma(ir, ic)) return false;
+        }
+        if(!isExistMikata(r,c,this.isSente)) return true;
+        return false;
     };
 
 
@@ -196,8 +210,8 @@ function initKoma(){
         for(var i = 0; i < MASU_COUNT; i++){
             koma_list.push(new Koma("歩", n,i,isSente, fu));
         }
-        koma_list.push(new Koma("飛", n+dir,isSente?1:7,isSente, hisha));
-        koma_list.push(new Koma("角", n+dir,isSente?7:1,isSente));
+        koma_list.push(new Koma("飛", n+dir,isSente?7:1,isSente, hisha));
+        koma_list.push(new Koma("角", n+dir,isSente?1:7,isSente, kaku));
 
         const koma_names = ["香", "桂", "銀", "金"];
         const canMoves = [kyo, keima, gin,kin];
@@ -213,6 +227,11 @@ function initKoma(){
     }
 }
 
+function direction(a, b){
+    if(a > b) return a-b;
+    else return b - a;
+}
+
 isStart = true;
 
 draw = function(){
@@ -223,6 +242,13 @@ draw = function(){
     background(225);
     drawBoard();
     drawKoma();
+    fill(0);
+    if(turn){
+        textSize(24);
+        text("先手",30,50);
+    }else{
+        text("後手",30,50);
+    }
 }
 
 function drawBoard(){
@@ -253,8 +279,9 @@ mousePressed = function(){
         selectedKoma.c = c;
         selectedKoma.isSelected = false;
         selectedKoma = null;
+        turn = !turn;
     }
-    if(koma) {
+    if(koma && koma.isSente == turn) {
         koma.isSelected = true;
         if(selectedKoma) selectedKoma.isSelected = false;
         selectedKoma = koma;
